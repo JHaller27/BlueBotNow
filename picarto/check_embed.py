@@ -45,16 +45,28 @@ class CheckEmbedDecorator(CheckEmbedBuilder):
 
 
 class CheckEmbedBase(CheckEmbedBuilder):
+    def _get_title(self, details: ChannelDetails) -> str:
+        if details.title is None or details.title == '':
+            return f'{details.name} on Picarto.tv'
+
+        return f'{details.name} - {details.title}'
+
     def can_handle(self, details: ChannelDetails) -> bool:
         return True
 
     def build(self, details: ChannelDetails) -> Embed:
         # This is the default Embed
         # All default options go here
-        return Embed(
-            title=f"{details.name} on Picarto.tv",
+        title = self._get_title(details)
+
+        embed = Embed(
+            title=title,
             url=f"https://www.picarto.tv/{details.name}",
         )
+
+        embed.set_thumbnail(url=details.thumbnails.mobile)
+
+        return embed
 
 
 #region Decorators
