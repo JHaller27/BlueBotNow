@@ -1,8 +1,10 @@
 from discord.ext import commands
+from discord import Embed
 
+from .channel_embed import get_big_embed, get_minimal_embed
 
-from datetime import datetime, timedelta, date
 import requests
+
 from .models.channelDetails import ChannelDetails
 
 
@@ -20,59 +22,6 @@ def get_channel_data(channel_name: str) -> ChannelDetails:
     return details
 
 
-def get_online_message(details: ChannelDetails) -> str:
-    return f'{details.name} is currently online!\n' + \
-           f'Watch them at https://www.picarto.tv/{details.name}.'
-
-
-def format_label(value: int, one_label: str, many_label: str) -> str:
-    assert value > 0
-
-    if value == 1:
-        return f'{value} {one_label}'
-
-    return f'{value} {many_label}'
-
-
-def format_delta(delta: timedelta) -> str:
-    time = int(delta.total_seconds())
-
-    if time < 1:
-        return '<1 second'
-
-    if time < 60:
-        return format_label(time, 'second', 'seconds')
-
-    time = time // 60
-    if time < 60:
-        return format_label(time, 'minute', 'minutes')
-
-    time = time // 60
-    if time < 60:
-        return format_label(time, 'hour', 'hours')
-
-    time //= 24
-    if time < 24:
-        return format_label(time, 'day', 'days')
-
-    time //= 30
-    if time < 30:
-        return format_label(time, 'month', 'months')
-
-    time //= 12
-    return format_label(time, 'year', 'years')
-
-
-def get_offline_message(details: ChannelDetails) -> str:
-    last_seen = datetime.strptime(details.last_live, r'%Y-%m-%d %H:%M:%S')
-    now = datetime.utcnow()
-    delta = now - last_seen
-    ago_msg = format_delta(delta)
-
-    return f'{details.name} is currently offline.\n' + \
-           f'They were last online {ago_msg} ago.'
-
-
 class Picarto(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self._bot = bot
@@ -87,14 +36,21 @@ class Picarto(commands.Cog):
 
     @picarto.command()
     async def check(self, ctx: commands.Context, name: str = 'BGNlive'):
+        # Check if channel is live, with minimal extra info
+
         details = get_channel_data(name)
+        embed = get_minimal_embed(details)
 
-        if details.online:
-            msg = get_online_message(details)
-        else:
-            msg = get_offline_message(details)
+        await ctx.send(embed=embed)
 
-        await ctx.send(msg)
+    @picarto.command()
+    async def info(self, ctx: commands.Context, name: str = 'BGNlive'):
+        # Get all information about a channel
+
+        details = get_channel_data(name)
+        embed = get_big_embed(details)
+
+        await ctx.send(embed=embed)
 
 
 def setup(bot):
