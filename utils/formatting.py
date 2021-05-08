@@ -2,6 +2,13 @@ from typing import List
 from datetime import timedelta
 
 
+def format_secret(value: str) -> str:
+    if len(value) < 3:
+        return f'*** ({value})'
+
+    return f'{value[0]}...{value[-1]} ({len(value)})'
+
+
 def format_label(value: int, one_label: str, many_label: str) -> str:
     assert value > 0
 
