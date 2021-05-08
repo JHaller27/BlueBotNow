@@ -1,9 +1,17 @@
+from typing import Union
+
 from discord.ext import commands
 from discord import Embed
 
 from datetime import datetime, timedelta
+
 import requests
+
 from .models.channelDetails import ChannelDetails
+
+
+PICARTO_GREEN = 0x1DA557
+OFFLINE = 0x4F545C
 
 
 def get_channel_data(channel_name: str) -> ChannelDetails:
@@ -58,19 +66,19 @@ def format_delta(delta: timedelta) -> str:
     return format_label(time, 'year', 'years')
 
 
-def get_offline_message(details: ChannelDetails) -> str:
+def get_offline_message(details: ChannelDetails) -> Union[str, int]:
     last_seen = datetime.strptime(details.last_live, r'%Y-%m-%d %H:%M:%S')
     now = datetime.utcnow()
     delta = now - last_seen
     ago_msg = format_delta(delta)
 
     return f'_{details.name}_ is currently **offline**.\n' + \
-           f'They were last online _{ago_msg} ago_.'
+           f'They were last online _{ago_msg} ago_.', OFFLINE
 
 
-def get_online_message(details: ChannelDetails) -> str:
+def get_online_message(details: ChannelDetails) -> Union[str, int]:
     return f'_{details.name}_ is currently **online**!\n' + \
-           f'Watch them at https://www.picarto.tv/{details.name}.'
+           f'Watch them at https://www.picarto.tv/{details.name}.', PICARTO_GREEN
 
 
 class Picarto(commands.Cog):
@@ -90,11 +98,18 @@ class Picarto(commands.Cog):
         details = get_channel_data(name)
 
         if details.online:
-            msg = get_online_message(details)
+            msg, color = get_online_message(details)
         else:
-            msg = get_offline_message(details)
+            msg, color = get_offline_message(details)
 
-        await ctx.send(msg)
+        embed = Embed(
+            title=f"{details.name} on Picarto.tv",
+            url=f"https://www.picarto.tv/{details.name}",
+            description=msg,
+            color=color,
+        )
+
+        await ctx.send(embed=embed)
 
 
 def setup(bot):
