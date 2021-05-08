@@ -1,11 +1,34 @@
 from discord.ext import commands
 from discord import Embed
+from requests.models import Response
 
 from .channel_embed import get_big_embed, get_minimal_embed
 
 import requests
 
 from .models.channelDetails import ChannelDetails
+
+
+class CallerError(RuntimeError):
+    def __init__(self, response: Response, *args: object) -> None:
+        super().__init__(str(response))
+        self._response = response
+
+    @property
+    def status_code(self) -> int:
+        return self._response.status_code
+
+    @property
+    def text(self) -> str:
+        return self._response.text
+
+    @property
+    def ux_message(self) -> str:
+        return f"Failed call: {self.status_code}"
+
+    @property
+    def full_message(self) -> str:
+        return f"Failed call with code: {self.status_code}.\n" + self.text
 
 
 def get_channel_data(channel_name: str) -> ChannelDetails:
@@ -15,6 +38,9 @@ def get_channel_data(channel_name: str) -> ChannelDetails:
     }
 
     response = requests.get(uri, headers=headers)
+
+    if response.status_code != 200:
+        raise CallerError(response)
 
     data = response.json()
     details = ChannelDetails.parse_obj(data)
@@ -38,19 +64,29 @@ class Picarto(commands.Cog):
     async def check(self, ctx: commands.Context, name: str = 'BGNlive'):
         # Check if channel is live, with minimal extra info
 
-        details = get_channel_data(name)
-        embed = get_minimal_embed(details)
+        try:
+            details = get_channel_data(name)
+            embed = get_minimal_embed(details)
 
-        await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
+
+        except CallerError as err:
+            print(err.full_message)
+            await ctx.send(err.ux_message)
 
     @picarto.command()
     async def info(self, ctx: commands.Context, name: str = 'BGNlive'):
         # Get all information about a channel
 
-        details = get_channel_data(name)
-        embed = get_big_embed(details)
+        try:
+            details = get_channel_data(name)
+            embed = get_big_embed(details)
 
-        await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
+
+        except CallerError as err:
+            print(err.full_message)
+            await ctx.send(err.ux_message)
 
 
 def setup(bot):
