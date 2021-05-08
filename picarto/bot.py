@@ -28,7 +28,9 @@ class CallerError(RuntimeError):
 
     @property
     def full_message(self) -> str:
-        return f"Failed call with code: {self.status_code}.\n" + self.text
+        text = 'Requires capta' if 'meta name="captcha-bypass"' in self.text else self.text
+
+        return f"Failed call with code: {self.status_code}.\n" + text
 
 
 def get_channel_data(channel_name: str) -> ChannelDetails:
