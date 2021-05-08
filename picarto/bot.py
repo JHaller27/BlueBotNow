@@ -1,7 +1,7 @@
 from discord.ext import commands
+from discord import Embed
 
-
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
 import requests
 from .models.channelDetails import ChannelDetails
 
@@ -18,11 +18,6 @@ def get_channel_data(channel_name: str) -> ChannelDetails:
     details = ChannelDetails.parse_obj(data)
 
     return details
-
-
-def get_online_message(details: ChannelDetails) -> str:
-    return f'{details.name} is currently online!\n' + \
-           f'Watch them at https://www.picarto.tv/{details.name}.'
 
 
 def format_label(value: int, one_label: str, many_label: str) -> str:
@@ -69,8 +64,13 @@ def get_offline_message(details: ChannelDetails) -> str:
     delta = now - last_seen
     ago_msg = format_delta(delta)
 
-    return f'{details.name} is currently offline.\n' + \
-           f'They were last online {ago_msg} ago.'
+    return f'_{details.name}_ is currently **offline**.\n' + \
+           f'They were last online _{ago_msg} ago_.'
+
+
+def get_online_message(details: ChannelDetails) -> str:
+    return f'_{details.name}_ is currently **online**!\n' + \
+           f'Watch them at https://www.picarto.tv/{details.name}.'
 
 
 class Picarto(commands.Cog):
