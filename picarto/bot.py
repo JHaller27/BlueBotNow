@@ -1,7 +1,7 @@
 from discord.ext import commands
 from discord import Embed
 
-from .check_embed import factory as check_embed_factory
+from .channel_embed import get_big_embed, get_minimal_embed
 
 import requests
 
@@ -36,8 +36,19 @@ class Picarto(commands.Cog):
 
     @picarto.command()
     async def check(self, ctx: commands.Context, name: str = 'BGNlive'):
+        # Check if channel is live, with minimal extra info
+
         details = get_channel_data(name)
-        embed = check_embed_factory(details)
+        embed = get_minimal_embed(details)
+
+        await ctx.send(embed=embed)
+
+    @picarto.command()
+    async def info(self, ctx: commands.Context, name: str = 'BGNlive'):
+        # Get all information about a channel
+
+        details = get_channel_data(name)
+        embed = get_big_embed(details)
 
         await ctx.send(embed=embed)
 
