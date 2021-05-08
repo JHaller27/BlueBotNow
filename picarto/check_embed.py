@@ -9,9 +9,6 @@ from utils.formatting import format_delta, format_list_text
 # region AbstractsAndInterfaces
 
 class CheckEmbedBuilder:
-    def can_handle(self, details: ChannelDetails) -> bool:
-        raise NotImplementedError
-
     def build(self, details: ChannelDetails) -> Embed:
         raise NotImplementedError
 
@@ -50,9 +47,6 @@ class CheckEmbedBase(CheckEmbedBuilder):
             return f'{details.name} on Picarto.tv'
 
         return f'{details.name} - {details.title}'
-
-    def can_handle(self, details: ChannelDetails) -> bool:
-        return True
 
     def build(self, details: ChannelDetails) -> Embed:
         # This is the default Embed
