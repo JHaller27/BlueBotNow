@@ -1,9 +1,9 @@
 from discord.ext import commands
-from discord import Embed
 from requests.models import Response
 
 from .channel_embed import get_big_embed, get_minimal_embed
 
+import os
 import requests
 
 from .models.channelDetails import ChannelDetails
@@ -34,7 +34,9 @@ class CallerError(RuntimeError):
 
 
 def get_channel_data(channel_name: str) -> ChannelDetails:
-    uri = f"https://api.picarto.tv/api/v1/channel/name/{channel_name}"
+    host = os.environ.get('PICARTO_HOST') or 'https://api.picarto.tv/api/v1'
+
+    uri = f"{host}/channel/name/{channel_name}"
     headers = {
         "User-Agent": "curl/7.68.0"
     }
