@@ -77,6 +77,20 @@ class OnlineDecorator(CheckEmbedDecorator):
     def __init__(self, base: CheckEmbedBuilder):
         super().__init__(base)
 
+    def _add_fields(self, details: ChannelDetails, embed: Embed):
+        if len(details.tags) > 0:
+            tags_value = ', '.join(details.tags)
+            embed.add_field(name='Tags', value=f':label: {tags_value}', inline=True)
+
+        other_values = []
+        if details.adult:
+            other_values.append(':warning: NSFW')
+        if details.gaming:
+            other_values.append(':video_game: Gaming')
+
+        if len(other_values) > 0:
+            embed.add_field(name='Other info', value=' '.join(other_values), inline=True)
+
     def can_handle(self, details: ChannelDetails) -> bool:
         return details.online
 
@@ -84,6 +98,8 @@ class OnlineDecorator(CheckEmbedDecorator):
         embed.description = f'_{details.name}_ is currently **online**!\n' + \
             f'Watch them at https://www.picarto.tv/{details.name}.'
         embed.color = OnlineDecorator.PICARTO_GREEN_COLOR
+
+        self._add_fields(details, embed)
 
 
 class OfflineDecorator(CheckEmbedDecorator):
