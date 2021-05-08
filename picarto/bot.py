@@ -34,7 +34,7 @@ class CallerError(RuntimeError):
 def get_channel_data(channel_name: str) -> ChannelDetails:
     uri = f"https://api.picarto.tv/api/v1/channel/name/{channel_name}"
     headers = {
-        "User-Agent": "somebot"
+        "User-Agent": "curl/7.68.0"
     }
 
     response = requests.get(uri, headers=headers)
