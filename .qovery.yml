@@ -1,0 +1,11 @@
+---
+application:
+  name: "bluebotnow"
+  project: "blue-bot-now"
+  organization: "QoveryCommunity"
+routers:
+- name: "main-bluebotnow"
+  routes:
+  - application_name: "bluebotnow"
+    paths:
+    - "/*"
