@@ -1,3 +1,4 @@
+from typing import List
 from datetime import timedelta
 
 
@@ -37,3 +38,12 @@ def format_delta(delta: timedelta) -> str:
 
     time //= 12
     return format_label(time, 'year', 'years')
+
+
+def format_list_text(arr: List[str]) -> str:
+    assert len(arr) > 0
+
+    if len(arr) == 1:
+        return arr[0]
+
+    return ', '.join(arr[:-1]) + f', and {arr[-1]}'

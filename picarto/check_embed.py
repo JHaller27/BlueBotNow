@@ -3,7 +3,7 @@ from discord import Embed
 
 from datetime import datetime
 
-from utils.formatting import format_delta
+from utils.formatting import format_delta, format_list_text
 
 
 # region AbstractsAndInterfaces
@@ -122,6 +122,21 @@ class OfflineDecorator(CheckEmbedDecorator):
         embed.color = OfflineDecorator.OFFLINE_COLOR
 
 
+class MultistreamDecorator(CheckEmbedDecorator):
+    def __init__(self, base: CheckEmbedBuilder):
+        super().__init__(base)
+
+    def can_handle(self, details: ChannelDetails) -> bool:
+        return details.online and len(details.multistream) > 0
+
+    def decorate_embed(self, details: ChannelDetails, embed: Embed):
+        # Overrwrite the first line of the description
+        lines = embed.description.split('\n')
+        with_list = format_list_text([ms.name for ms in details.multistream])
+        lines[0] = f'_{details.name}_ is currently **online** with {with_list}'
+
+        embed.description = '\n'.join(lines)
+
 # Add more decorators here by copying the __init__, and implementing can_handle() and decorate_embed().
 # Then add new decorator to factory() below
 
@@ -132,5 +147,6 @@ def factory(details: ChannelDetails) -> Embed:
     builder = CheckEmbedBase()
     builder = OnlineDecorator(builder)
     builder = OfflineDecorator(builder)
+    builder = MultistreamDecorator(builder)
 
     return builder.build(details)
