@@ -1,4 +1,6 @@
 from utils.tools import read_env
+from utils.logging import Logger
+
 from discord.ext import commands
 from requests.models import Response
 
@@ -59,11 +61,13 @@ class Picarto(commands.Cog):
 
     @commands.group()
     async def picarto(self, ctx: commands.Context):
-        pass
+        Logger("picarto").info(ctx.author.name, "invoked a picarto command")
 
     @picarto.command()
     async def check(self, ctx: commands.Context, name: str = 'BGNlive'):
         # Check if channel is live, with minimal extra info
+
+        Logger("picarto").debug(f"enter check({name})")
 
         try:
             details = get_channel_data(name)
@@ -75,9 +79,14 @@ class Picarto(commands.Cog):
             print(err.full_message)
             await ctx.send(err.ux_message)
 
+        finally:
+            Logger("picarto").debug(f"exit check({name})")
+
     @picarto.command()
     async def info(self, ctx: commands.Context, name: str = 'BGNlive'):
         # Get all information about a channel
+
+        Logger("picarto").debug(f"enter info({name})")
 
         try:
             details = get_channel_data(name)
@@ -88,6 +97,9 @@ class Picarto(commands.Cog):
         except CallerError as err:
             print(err.full_message)
             await ctx.send(err.ux_message)
+
+        finally:
+            Logger("picarto").debug(f"exit info({name})")
 
 
 def setup(bot):

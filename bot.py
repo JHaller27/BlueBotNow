@@ -5,8 +5,10 @@ from discord.ext import commands
 
 
 # Set up logging
-logging.set_level(logging.Level.INFO)
+logging.set_level(read_env('LOG_LEVEL', 'INFO'))
 logger = logging.Logger("root")
+
+logger.debug("Log level:", logging.level)
 
 
 class Bot(commands.Bot):

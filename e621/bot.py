@@ -1,3 +1,4 @@
+from typing import final
 from discord.ext import commands
 from discord import Embed
 from requests.models import Response
@@ -6,6 +7,8 @@ from .models.posts import Posts
 from .models.post import Post
 
 from utils.tools import read_env
+from utils.logging import Logger
+
 import requests
 
 
@@ -70,10 +73,12 @@ class E621(commands.Cog):
 
     @commands.group()
     async def e621(self, ctx: commands.Context):
-        pass
+        Logger("e621").info(ctx.author.name, "invoked a e621 command")
 
     @e621.command()
     async def search(self, ctx: commands.Context, *tags: str):
+        Logger("e621").debug(f"enter search({tags})")
+
         limit = 1
         tag_query = '+'.join(tags)
 
@@ -99,6 +104,9 @@ class E621(commands.Cog):
         except CallerError as err:
             print(err.full_message)
             await ctx.send(err.ux_message)
+
+        finally:
+            Logger("e621").debug(f"exit search({tags})")
 
 
 def setup(bot):
