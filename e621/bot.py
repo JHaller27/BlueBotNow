@@ -5,7 +5,7 @@ from requests.models import Response
 from .models.posts import Posts
 from .models.post import Post
 
-import os
+from utils.tools import read_env
 import requests
 
 
@@ -50,7 +50,7 @@ class E621(commands.Cog):
         return f"{self._bot_name}/{self._version} by {self._username}"
 
     def get_posts(self, tags: list[str], limit: int = 5) -> list[Post]:
-        host = os.environ.get('E621_HOST') or 'https://e621.net'
+        host = read_env('E621_HOST', 'https://e621.net')
 
         tag_list = '+'.join(tags)
         uri = f"{host}/posts.json?limit={limit}&tags={tag_list}"
@@ -102,5 +102,5 @@ class E621(commands.Cog):
 
 
 def setup(bot):
-    username = os.environ.get("E621_UNAME") or "(username not found)"
+    username = read_env("E621_UNAME", "(username not found)")
     bot.add_cog(E621(bot, username))

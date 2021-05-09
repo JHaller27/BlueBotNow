@@ -1,3 +1,4 @@
+from utils.tools import read_env
 from discord.ext import commands
 from requests.models import Response
 
@@ -34,7 +35,7 @@ class CallerError(RuntimeError):
 
 
 def get_channel_data(channel_name: str) -> ChannelDetails:
-    host = os.environ.get('PICARTO_HOST') or 'https://api.picarto.tv/api/v1'
+    host = read_env('PICARTO_HOST', 'https://api.picarto.tv/api/v1')
 
     uri = f"{host}/channel/name/{channel_name}"
     headers = {
@@ -59,10 +60,6 @@ class Picarto(commands.Cog):
     @commands.group()
     async def picarto(self, ctx: commands.Context):
         pass
-
-    @picarto.command()
-    async def ping(self, ctx: commands.Context):
-        await ctx.send("picarto pong")
 
     @picarto.command()
     async def check(self, ctx: commands.Context, name: str = 'BGNlive'):
