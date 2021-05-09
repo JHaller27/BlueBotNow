@@ -1,5 +1,24 @@
-from typing import List
+from typing import List, Optional
 from datetime import timedelta
+
+
+class Secret:
+    def __init__(self, val: Optional[str]):
+        self._value = val or ''
+
+    @property
+    def value(self) -> str:
+        return self._value
+
+    @property
+    def is_empty(self) -> bool:
+        return len(self._value) == 0
+
+    def __repr__(self) -> str:
+        if len(self.value) < 3:
+            return f'*** ({self.value})'
+
+        return f'{self.value[0]}...{self.value[-1]} ({len(self.value)})'
 
 
 def format_label(value: int, one_label: str, many_label: str) -> str:

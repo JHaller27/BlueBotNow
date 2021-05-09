@@ -1,9 +1,9 @@
+from picarto.models.descriptionPanel import DescriptionPanel
 from typing import Optional
 
 from .models.channelDetails import ChannelDetails
 from discord import Embed
 from datetime import datetime
-from itertools import islice
 
 from utils.formatting import format_delta, format_list_text
 
@@ -97,11 +97,24 @@ class ChannelEmbedMeta:
 
     @property
     def panels(self) -> list[tuple[str, str]]:
-        for idx, panel in enumerate(sorted(self._channel_details.description_panels, key=lambda p: p.position)):
-            title = panel.title
-            if title is None or title == '':
-                title = f"Panel {idx+1}"
-            yield (title, panel.body)
+        for panel in sorted(self._channel_details.description_panels, key=lambda p: p.position):
+            panel: DescriptionPanel
+
+            title = panel.title or f"Panel {panel.position}"
+            body = panel.body or "No information found"
+
+            return title, body
+
+    @property
+    def panel(self) -> tuple[str, str]:
+        panels = self._channel_details.description_panels
+
+        panel: DescriptionPanel = sorted(panels, key=lambda p: p.position)[0]
+
+        title = panel.title or "Channel information"
+        body = panel.body or "No information found"
+
+        return title, body
 
 
 def get_minimal_embed(details: ChannelDetails) -> Embed:
@@ -116,8 +129,10 @@ def get_minimal_embed(details: ChannelDetails) -> Embed:
         if img := meta.image:
             embed.set_image(url=img)
 
-    for name, value in islice(meta.panels, 1):
-        embed.add_field(name=name, value=value, inline=False)
+    name, value = meta.panel
+    embed.add_field(name=name, value=value, inline=False)
+
+    embed.color = meta.color
 
     return embed
 
