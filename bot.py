@@ -12,6 +12,7 @@ class Bot(commands.Bot):
 prefix = os.environ.get('DISCORD_PREFIX') or '/'
 bot = Bot(command_prefix=prefix)
 bot.load_extension('picarto.bot')
+bot.load_extension('e621.bot')
 
 # Run Bot
 token_env_name = 'DISCORD_TOKEN'
