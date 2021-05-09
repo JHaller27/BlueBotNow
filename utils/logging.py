@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 from datetime import datetime
 from enum import Enum
 
@@ -78,8 +78,14 @@ class Logger(metaclass=SingletonMeta):
 level: Level = Level.WARNING
 
 
-def set_level(new_level: Level):
+def set_level(new_level: Union[Level, int, str]):
     global level
+
+    if isinstance(new_level, int):
+        new_level = Level(new_level)
+    elif isinstance(new_level, str):
+        new_level = Level[new_level.upper()]
+
     level = new_level
 
 
@@ -91,5 +97,5 @@ if __name__ == "__main__":
         Logger("foo").critical("Apocalypse!!!")
 
     log()
-    set_level(Level.DEBUG)
+    set_level('debug')
     log()
