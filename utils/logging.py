@@ -61,16 +61,18 @@ class Logger(metaclass=SingletonMeta):
         self.log(*msg, level=Level.CRITICAL)
 
     def log(self, *parts: str, level: int = Level.INFO) -> None:
-        if level >= self._level:
-            now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-2]
+        now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-2]
 
-            try:
-                level_name = Level(level).name
-            except ValueError:
-                level_name = f"LOG:{level}"
+        if level < self._level:
+            return
 
-            msg = ' '.join([str(p) for p in parts])
-            print(self._fmt.format(now=now, name=self._name, level_name=level_name, msg=msg))
+        try:
+            level_name = Level(level).name
+        except ValueError:
+            level_name = f"LOG:{level}"
+
+        msg = ' '.join([str(p) for p in parts])
+        print(self._fmt.format(now=now, name=self._name, level_name=level_name, msg=msg))
 
 
 level: Level = Level.WARNING
