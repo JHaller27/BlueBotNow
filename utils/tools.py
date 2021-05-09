@@ -1,3 +1,6 @@
+from utils import logging
+from utils.logging import Logger
+
 from typing import Optional
 import os
 
@@ -21,7 +24,7 @@ class Secret:
         return f'{self.value[0]}...{self.value[-1]} ({len(self.value)})'
 
 
-def read_env(name: str, default: str = None, err_msg: str = None) -> str:
+def read_env(name: str, default: str = None) -> str:
     """
     Attempt to read a variable from the environment.
     :param name: Name of environment variable
@@ -30,14 +33,19 @@ def read_env(name: str, default: str = None, err_msg: str = None) -> str:
                     Note: Can format with token name using '{0}'
     :param secret: Return a Secret string instead of a plaintext string (default: False)
     """
+    Logger("read_env").debug(f"Reading '{name}'")
+
     value = os.environ.get(name)
 
     if value is None:
         if default is None:
-            msg = err_msg if err_msg is None else err_msg.format(name)
-            raise ValueError(msg)
+            raise ValueError(f"No environment variable found named '{name}'")
 
         value = default
+        Logger("read_env").debug(f"Using default value")
+
+    else:
+        Logger("read_env").debug(f"Found value")
 
     return value
 
