@@ -30,13 +30,20 @@ class Logger(metaclass=SingletonMeta):
     _level: str
     _fmt: str
 
+    NAME_MAX_WIDTH = 8
+
     def __init__(self, name: Optional[str]) -> None:
         self._name = name
 
         if self._name is not None and len(self._name) > 0:
-            self._fmt = '{now} {name} {level_name:>8} - {msg}'
+            self._fmt = '{now} {name:%d} {level_name:>8} - {msg}' % Logger.NAME_MAX_WIDTH
         else:
             self._fmt = '{now} {level_name:>8} {msg}'
+
+        if len(self._name) > Logger.NAME_MAX_WIDTH:
+            new_name = self._name[:Logger.NAME_MAX_WIDTH]
+            self.warn(f"Logger name too long: will show as {new_name}")
+            self._name = new_name
 
     @property
     def _level(self) -> Level:
