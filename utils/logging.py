@@ -1,5 +1,5 @@
 from typing import Optional, Union
-from datetime import datetime
+from utils.time import iso_now
 from enum import Enum
 
 
@@ -68,7 +68,7 @@ class Logger(metaclass=SingletonMeta):
         self.log(*msg, level=Level.CRITICAL)
 
     def log(self, *parts: str, level: int = Level.INFO) -> None:
-        now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-2]
+        now = iso_now()
 
         if level < self._level:
             return

@@ -1,7 +1,5 @@
-from typing import List, Optional
+from typing import List
 from datetime import timedelta
-
-
 
 
 def format_label(value: int, one_label: str, many_label: str) -> str:
