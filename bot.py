@@ -25,8 +25,8 @@ def extend(bot, name: str, logger: logging.Logger):
     logger.debug(f"Finished loading extension {name}")
 
 
-extend(bot, 'picarto.bot', logger)
-extend(bot, 'e621.bot', logger)
+extend(bot, 'picarto.cog', logger)
+extend(bot, 'e621.cog', logger)
 
 try:
     bot_token = read_secret('DISCORD_TOKEN')
