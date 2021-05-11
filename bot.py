@@ -14,6 +14,8 @@ logger.debug("Log level:", logging.level)
 class Bot(commands.Bot):
     async def on_ready(self):
         logger.info(f"Bot is ready using prefix '{self.command_prefix}'")
+        for guild in self.guilds:
+            logger.info(f"Connected to guild {guild.id} {guild.name}")
 
 
 bot = Bot(command_prefix=read_env('DISCORD_PREFIX', '/'))
