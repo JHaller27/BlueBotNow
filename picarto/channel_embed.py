@@ -39,8 +39,9 @@ class ChannelEmbedMeta:
             online_text = f'_{self._channel_details.name}_ is currently **online**'
 
             # If channel is a multistream, add each stream participant
-            if len(self._channel_details.multistream) > 0:
-                with_list = format_list_text([ms.name for ms in self._channel_details.multistream])
+            with_list = [ms.name for ms in self._channel_details.multistream if ms.name != self._channel_details.name]
+            if len(with_list) > 0:
+                with_list = format_list_text(with_list)
                 online_text += f' with {with_list}'
 
             return f'{online_text}!\n' + \
