@@ -9,8 +9,9 @@ class CustomCommand:
     def __init__(self, bot_name: str, cmd_name: str, logger: Logger, ctx: commands.Context):
         self._bot_name = bot_name
         self._cmd_name = cmd_name
-        self._logger = logger
         self._ctx = ctx
+
+        self._logger = logger.add_id(self.id)
 
     @property
     def id(self) -> int:
@@ -37,8 +38,8 @@ class CustomCommand:
 
     async def run(self, *args):
         args_str = ','.join(args)
-        self.logger.info(f"Invoking {self.name}({args_str}) (id: {self.id})")
-        self.logger.debug(f"{self.id} invoked for user {self.ctx.author.id} ({self.ctx.author.name}) in guild {self.ctx.guild.id} ({self.ctx.guild.name})")
+        self.logger.info(f"Invoking {self.name}({args_str})")
+        self.logger.debug("Invoked for user {self.ctx.author.id} ({self.ctx.author.name}) in guild {self.ctx.guild.id} ({self.ctx.guild.name})")
 
         try:
             await self._run(*args)
@@ -46,4 +47,4 @@ class CustomCommand:
             print(err.full_message)
             await self.ctx.send(err.ux_message)
 
-        self.logger.debug(f"{self.id} invocation finished")
+        self.logger.debug("Invocation finished")

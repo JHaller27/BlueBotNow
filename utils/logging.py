@@ -11,43 +11,41 @@ class Level(int, Enum):
     CRITICAL=40,
 
 
-class SingletonMeta(type):
-    _instances = {}
-
-    def __call__(cls, name: str = None):
-        """
-        Possible changes to the value of the `__init__` argument do not affect
-        the returned instance.
-        """
-        if name not in cls._instances:
-            instance = super().__call__(name)
-            cls._instances[name] = instance
-        return cls._instances[name]
-
-
-class Logger(metaclass=SingletonMeta):
+class Logger():
     _name: str
     _level: str
     _fmt: str
 
     NAME_MAX_WIDTH = 8
 
-    def __init__(self, name: Optional[str]) -> None:
+    def __init__(self, name: Optional[str], id_hash: str = None) -> None:
         self._name = name
-
-        if self._name is not None and len(self._name) > 0:
-            self._fmt = '{now} {name:%d} {level_name:>8} - {msg}' % Logger.NAME_MAX_WIDTH
-        else:
-            self._fmt = '{now} {level_name:>8} {msg}'
 
         if len(self._name) > Logger.NAME_MAX_WIDTH:
             new_name = self._name[:Logger.NAME_MAX_WIDTH]
             self.warn(f"Logger name too long: will show as {new_name}")
             self._name = new_name
 
+        if self._name is None or len(self._name) == 0:
+            prefix = '{now} {level_name:>8}'
+        else:
+            name_fmt = '{0:%d}' % Logger.NAME_MAX_WIDTH
+            name = name_fmt.format(self._name)
+            prefix = '{now} %s {level_name:>8}' % name
+
+        if id_hash is None or len(id_hash) == 0:
+            suffix = '{msg}'
+        else:
+            suffix = '%s {msg}' % id_hash
+
+        self._fmt = f'{prefix} - {suffix}'
+
     @property
     def _level(self) -> Level:
         return level
+
+    def add_id(self, id_hash) -> 'Logger':
+        return Logger(self._name, id_hash)
 
     def set_level(self, level: int):
         self._level = level

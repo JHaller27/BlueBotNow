@@ -14,7 +14,7 @@ class Picarto(commands.Cog):
 
     @commands.group()
     async def picarto(self, ctx: commands.Context):
-        self._logger.info(ctx.author.name, "invoked a picarto command")
+        pass
 
     @picarto.command()
     async def check(self, ctx: commands.Context, name: str = 'BGNlive'):
