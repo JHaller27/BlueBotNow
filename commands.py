@@ -39,7 +39,7 @@ class CustomCommand:
     async def run(self, *args):
         args_str = ','.join(args)
         self.logger.info(f"Invoking {self.name}({args_str})")
-        self.logger.debug("Invoked for user {self.ctx.author.id} ({self.ctx.author.name}) in guild {self.ctx.guild.id} ({self.ctx.guild.name})")
+        self.logger.debug(f"Invoked for user {self.ctx.author.id} ({self.ctx.author.name}) in guild {self.ctx.guild.id} ({self.ctx.guild.name})")
 
         try:
             await self._run(*args)
