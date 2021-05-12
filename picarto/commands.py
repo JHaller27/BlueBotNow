@@ -13,7 +13,7 @@ class Check(CustomCommand):
     async def _run(self, *args):
         (name, ) = args
 
-        details = get_channel_data(name)
+        details = get_channel_data(name, self._logger)
         embed = get_minimal_embed(details)
 
         await self.ctx.send(embed=embed)
@@ -26,7 +26,7 @@ class Info(CustomCommand):
     async def _run(self, *args):
         (name, ) = args
 
-        details = get_channel_data(name)
+        details = get_channel_data(name, self._logger)
         embed = get_big_embed(details)
 
         await self.ctx.send(embed=embed)

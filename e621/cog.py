@@ -39,12 +39,14 @@ class CallerError(RuntimeError):
 
 
 class E621(commands.Cog):
-    def __init__(self, bot: commands.Bot, username: str):
+    def __init__(self, bot: commands.Bot):
         self._bot = bot
+
+        self._logger = Logger('e621')
 
         self._bot_name = "BlueBotNow"
         self._version = "1.0"
-        self._username = username
+        self._username = read_env("E621_UNAME", "(username not found)", logger=self._logger)
 
     @property
     def _user_agent_header(self) -> str:
@@ -53,7 +55,7 @@ class E621(commands.Cog):
         return f"{self._bot_name}/{self._version} by {self._username}"
 
     def get_posts(self, tags: list[str], limit: int = 5) -> list[Post]:
-        host = read_env('E621_HOST', 'https://e621.net')
+        host = read_env('E621_HOST', 'https://e621.net', logger=self._logger)
 
         tag_list = '+'.join(tags)
         uri = f"{host}/posts.json?limit={limit}&tags={tag_list}"
@@ -73,11 +75,11 @@ class E621(commands.Cog):
 
     @commands.group()
     async def e621(self, ctx: commands.Context):
-        Logger("e621").info(ctx.author.name, "invoked a e621 command")
+        self._logger.info(ctx.author.name, "invoked a e621 command")
 
     @e621.command()
     async def search(self, ctx: commands.Context, *tags: str):
-        Logger("e621").debug(f"enter search({tags})")
+        self._logger.debug(f"enter search({tags})")
 
         limit = 1
         tag_query = '+'.join(tags)
@@ -106,9 +108,8 @@ class E621(commands.Cog):
             await ctx.send(err.ux_message)
 
         finally:
-            Logger("e621").debug(f"exit search({tags})")
+            self._logger.debug(f"exit search({tags})")
 
 
 def setup(bot):
-    username = read_env("E621_UNAME", "(username not found)")
-    bot.add_cog(E621(bot, username))
+    username =     bot.add_cog(E621(bot))

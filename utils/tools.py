@@ -6,21 +6,22 @@ import os
 
 
 class CacheCalls:
-    def __init__(self) -> None:
+    def __init__(self, ignore: list[str] = []) -> None:
         self._cache = {}
+        self._ignore_list = ignore
 
     def __call__(self, func) -> Any:
         def _do(*args, **kwargs):
-            key = CacheCalls._key(*args, **kwargs)
+            key = self._key(*args, **kwargs)
             if key not in self._cache:
                 self._cache[key] = func(*args, **kwargs)
             return self._cache[key]
 
         return _do
 
-    @staticmethod
-    def _key(*args: Any, **kwargs: Any) -> str:
-        return '::'.join(map(str, args)) + '|' + '::'.join(map(str, sorted(kwargs.items(), key=lambda kvp: kvp[0])))
+    def _key(self, *args: Any, **kwargs: Any) -> str:
+        allowed_kwargs = filter(lambda kvp: kvp[0] not in self._ignore_list, kwargs.items())
+        return '::'.join(map(str, args)) + '|' + '::'.join(map(str, sorted(allowed_kwargs, key=lambda kvp: kvp[0])))
 
 
 class Secret:
@@ -42,8 +43,8 @@ class Secret:
         return f'{self.value[0]}...{self.value[-1]} ({len(self.value)})'
 
 
-@CacheCalls()
-def read_env(name: str, default: str = None) -> str:
+@CacheCalls(ignore=['logger'])
+def read_env(name: str, default: str = None, *, logger: Logger = None) -> str:
     """
     Attempt to read a variable from the environment.
     :param name: Name of environment variable
@@ -52,7 +53,10 @@ def read_env(name: str, default: str = None) -> str:
                     Note: Can format with token name using '{0}'
     :param secret: Return a Secret string instead of a plaintext string (default: False)
     """
-    Logger("read_env").debug(f"Reading '{name}'")
+    if logger is None:
+        logger = Logger("read_env")
+
+    logger.debug(f"Reading '{name}'")
 
     value = os.environ.get(name)
 
@@ -61,10 +65,10 @@ def read_env(name: str, default: str = None) -> str:
             raise ValueError(f"No environment variable found named '{name}'")
 
         value = default
-        Logger("read_env").debug(f"Using default value")
+        logger.debug(f"Using default value")
 
     else:
-        Logger("read_env").debug(f"Found value")
+        logger.debug(f"Found value")
 
     return value
 

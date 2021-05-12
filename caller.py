@@ -1,3 +1,4 @@
+from utils.logging import Logger
 from utils.tools import read_env
 
 import requests
@@ -29,8 +30,8 @@ class CallerError(RuntimeError):
         return f"Failed call with code: {self.status_code}.\n" + text
 
 
-def get_channel_data(channel_name: str) -> ChannelDetails:
-    host = read_env('PICARTO_HOST', 'https://api.picarto.tv/api/v1')
+def get_channel_data(channel_name: str, logger: Logger) -> ChannelDetails:
+    host = read_env('PICARTO_HOST', 'https://api.picarto.tv/api/v1', logger=logger)
 
     uri = f"{host}/channel/name/{channel_name}"
     headers = {

@@ -18,7 +18,7 @@ class Bot(commands.Bot):
             logger.info(f"Connected to guild {guild.id} {guild.name}")
 
 
-bot = Bot(command_prefix=read_env('DISCORD_PREFIX', '/'))
+bot = Bot(command_prefix=read_env('DISCORD_PREFIX', '/', logger=logger))
 
 
 def extend(bot, name: str, logger: logging.Logger):
