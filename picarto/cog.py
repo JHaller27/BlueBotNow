@@ -3,9 +3,6 @@ from utils.logging import Logger
 
 from discord.ext import commands
 
-from .channel_embed import get_big_embed
-from caller import get_channel_data, CallerError
-
 
 class Picarto(commands.Cog):
     def __init__(self, bot: commands.Bot):

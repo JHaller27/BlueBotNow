@@ -1,8 +1,26 @@
 from utils.logging import Logger
 
-from typing import Optional
+from typing import Optional, Any
 import ctypes
 import os
+
+
+class CacheCalls:
+    def __init__(self) -> None:
+        self._cache = {}
+
+    def __call__(self, func) -> Any:
+        def _do(*args, **kwargs):
+            key = CacheCalls._key(*args, **kwargs)
+            if key not in self._cache:
+                self._cache[key] = func(*args, **kwargs)
+            return self._cache[key]
+
+        return _do
+
+    @staticmethod
+    def _key(*args: Any, **kwargs: Any) -> str:
+        return '::'.join(map(str, args)) + '|' + '::'.join(map(str, sorted(kwargs.items(), key=lambda kvp: kvp[0])))
 
 
 class Secret:
@@ -24,6 +42,7 @@ class Secret:
         return f'{self.value[0]}...{self.value[-1]} ({len(self.value)})'
 
 
+@CacheCalls()
 def read_env(name: str, default: str = None) -> str:
     """
     Attempt to read a variable from the environment.
