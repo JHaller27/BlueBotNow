@@ -1,4 +1,4 @@
-from picarto.commands import Check
+from picarto.commands import Check, Info
 from utils.logging import Logger
 
 from discord.ext import commands
@@ -10,35 +10,23 @@ from caller import get_channel_data, CallerError
 class Picarto(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self._bot = bot
+        self._logger = Logger("picarto")
 
     @commands.group()
     async def picarto(self, ctx: commands.Context):
-        Logger("picarto").info(ctx.author.name, "invoked a picarto command")
+        self._logger.info(ctx.author.name, "invoked a picarto command")
 
     @picarto.command()
     async def check(self, ctx: commands.Context, name: str = 'BGNlive'):
         # Check if channel is live, with minimal extra info
-        cmd = Check(Logger("picarto"), ctx)
+        cmd = Check(self._logger, ctx)
         await cmd.run(name)
 
     @picarto.command()
     async def info(self, ctx: commands.Context, name: str = 'BGNlive'):
         # Get all information about a channel
-
-        Logger("picarto").debug(f"enter info({name})")
-
-        try:
-            details = get_channel_data(name)
-            embed = get_big_embed(details)
-
-            await ctx.send(embed=embed)
-
-        except CallerError as err:
-            print(err.full_message)
-            await ctx.send(err.ux_message)
-
-        finally:
-            Logger("picarto").debug(f"exit info({name})")
+        cmd = Info(self._logger, ctx)
+        await cmd.run(name)
 
 
 def setup(bot):

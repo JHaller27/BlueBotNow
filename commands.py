@@ -1,6 +1,8 @@
 from caller import CallerError
 from discord.ext import commands
+
 from utils.logging import Logger
+from utils.tools import short_hash
 
 
 class CustomCommand:
@@ -12,7 +14,11 @@ class CustomCommand:
 
     @property
     def id(self) -> int:
-        return id(self)
+        return short_hash(
+            self._ctx.guild.id,
+            self._ctx.author.id,
+            id(self)
+        )
 
     @property
     def name(self) -> str:
@@ -40,4 +46,4 @@ class CustomCommand:
             print(err.full_message)
             await self.ctx.send(err.ux_message)
 
-        self.logger.debug(f"Invocation {self.id} finished")
+        self.logger.debug(f"{self.id} invocation finished")

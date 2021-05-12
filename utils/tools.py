@@ -1,7 +1,7 @@
-from utils import logging
 from utils.logging import Logger
 
 from typing import Optional
+import ctypes
 import os
 
 
@@ -58,3 +58,12 @@ def read_secret(*args, **kwargs) -> Secret:
     value = read_env(*args, **kwargs)
 
     return Secret(value)
+
+
+def short_hash(*parts, N: int = 4):
+    hashu=lambda word: ctypes.c_uint64(hash(word)).value
+    hashn=lambda word: (hashu(word)%(2**(N*8))).to_bytes(N,"big").hex()
+
+    uid = ''.join([str(p) for p in parts])
+
+    return hashn(uid)
