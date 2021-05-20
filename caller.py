@@ -35,7 +35,7 @@ def get_channel_data(channel_name: str, logger: Logger) -> ChannelDetails:
 
     uri = f"{host}/channel/name/{channel_name}"
     headers = {
-        "User-Agent": "BlueBotNow"
+        "User-Agent": "PTV-BOT-BlueBotNow"
     }
 
     response = requests.get(uri, headers=headers)
