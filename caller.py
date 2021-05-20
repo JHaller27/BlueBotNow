@@ -19,13 +19,16 @@ class CallerError(RuntimeError):
     def text(self) -> str:
         return self._response.text
 
+    def _is_dumb_error(self) -> bool:
+        return 'meta name="captcha-bypass"' in self.text
+
     @property
     def ux_message(self) -> str:
-        return f"Failed call: {self.status_code}"
+        return "Picarto is still being dumb :cry:" if self._is_dumb_error() else f"Failed call: {self.status_code}"
 
     @property
     def full_message(self) -> str:
-        text = 'Requires capta' if 'meta name="captcha-bypass"' in self.text else self.text
+        text = 'Requires capta' if self._is_dumb_error() else self.text
 
         return f"Failed call with code: {self.status_code}.\n" + text
 
