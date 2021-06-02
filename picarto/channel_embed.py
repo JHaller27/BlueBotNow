@@ -37,6 +37,10 @@ class ChannelEmbedMeta:
         return f"https://www.picarto.tv/{self.name}"
 
     @property
+    def badge(self) -> str:
+        return f"https://api.picarto.tv/channel/name/{self.name}/status.png"
+
+    @property
     def description(self) -> str:
         # If channel is online...
         if self.online:
@@ -122,7 +126,13 @@ class ChannelEmbedMeta:
         return title, body
 
 
-def get_minimal_embed(details: ChannelDetails) -> Embed:
+def get_status_badge(details: ChannelDetails) -> str:
+    meta = ChannelEmbedMeta(details)
+
+    return meta.badge
+
+
+def get_big_embed(details: ChannelDetails) -> Embed:
     meta = ChannelEmbedMeta(details)
 
     embed = Embed(title=meta.title, url=meta.url)
@@ -140,8 +150,3 @@ def get_minimal_embed(details: ChannelDetails) -> Embed:
     embed.color = meta.color
 
     return embed
-
-
-def get_big_embed(details: ChannelDetails) -> Embed:
-    # Placeholder - will more info add later
-    return get_minimal_embed(details)
