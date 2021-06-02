@@ -16,6 +16,10 @@ class ChannelEmbedMeta:
         self._channel_details = details
 
     @property
+    def name(self) -> str:
+        return self._channel_details.name
+
+    @property
     def online(self) -> bool:
         return self._channel_details.online or False
 
@@ -24,22 +28,22 @@ class ChannelEmbedMeta:
         details = self._channel_details
 
         if details.title is None or details.title == '':
-            return f'{details.name} on Picarto.tv'
+            return f'{self.name} on Picarto.tv'
 
-        return f'{details.name} - {details.title}'
+        return f'{self.name} - {details.title}'
 
     @property
     def url(self) -> str:
-        return f"https://www.picarto.tv/{self._channel_details.name}"
+        return f"https://www.picarto.tv/{self.name}"
 
     @property
     def description(self) -> str:
         # If channel is online...
         if self.online:
-            online_text = f'_{self._channel_details.name}_ is currently **online**'
+            online_text = f'_{self.name}_ is currently **online**'
 
             # If channel is a multistream, add each stream participant
-            with_list = [ms.name for ms in self._channel_details.multistream if ms.name != self._channel_details.name]
+            with_list = [ms.name for ms in self._channel_details.multistream if ms.name != self.name]
             if len(with_list) > 0:
                 with_list = format_list_text(with_list)
                 online_text += f' with {with_list}'
