@@ -1,4 +1,4 @@
-from picarto.commands import Check, Info
+from picarto.commands import Check, Info, Rules, Links
 from utils.logging import Logger
 
 from discord.ext import commands
@@ -23,6 +23,18 @@ class Picarto(commands.Cog):
     async def info(self, ctx: commands.Context, name: str = 'BGNlive'):
         # Get all information about a channel
         cmd = Info(self._logger, ctx)
+        await cmd.run(name)
+        
+    @picarto.command()
+    async def rules(self, ctx: commands.Context, name: str = 'BGNlive'):
+        # Get all the rules listed in the channel
+        cmd = Rules(self._logger, ctx)
+        await cmd.run(name)
+        
+    @picarto.command()
+    async def links(self, ctx: commands.Context, name: str = 'BGNlive'):
+        # Get all the affiliated links tied to the channel
+        cmd = Links(self._logger, ctx)
         await cmd.run(name)
 
 

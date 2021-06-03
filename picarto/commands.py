@@ -30,3 +30,27 @@ class Info(CustomCommand):
         embed = get_big_embed(details)
 
         await self.ctx.send(embed=embed)
+
+class Rules(CustomCommand):
+    def __init__(self, logger: Logger, ctx: commands.Context):
+        super().__init__("picarto", "rules", logger, ctx)
+
+    async def _run(self, *args):
+        (name, ) = args
+
+        details = get_channel_data(name, self._logger)
+        embed = get_big_embed(details)
+
+        await self.ctx.send(embed=embed)
+
+class Links(CustomCommand):
+    def __init__(self, logger: Logger, ctx: commands.Context):
+        super().__init__("picarto", "links", logger, ctx)
+
+    async def _run(self, *args):
+        (name, ) = args
+
+        details = get_channel_data(name, self._logger)
+        embed = get_big_embed(details)
+
+        await self.ctx.send(embed=embed)
