@@ -131,7 +131,7 @@ class ChannelEmbedMeta:
 
         panel: DescriptionPanel = sorted(panels, key=lambda p: p.position)[1]
 
-        title = panel.title or "Channel information"
+        title = panel.title or "Channel rules"
         body = panel.body or "No information found"
 
         return title, body
@@ -142,7 +142,7 @@ class ChannelEmbedMeta:
 
         panel: DescriptionPanel = sorted(panels, key=lambda p: p.position)[2]
 
-        title = panel.title or "Channel information"
+        title = panel.title or "Channel links"
         body = panel.body or "No information found"
 
         return title, body
@@ -152,24 +152,6 @@ def get_status_badge(details: ChannelDetails) -> str:
     meta = ChannelEmbedMeta(details)
 
     return meta.badge
-
-def get_rules(details: ChannelDetails) -> str:
-    meta = ChannelEmbedMeta(details)
-    embed = Embed(title=meta.title, url=meta.url)
-    
-    name, value = meta.rules_panel
-    embed.add_field(name=name, value=value, inline=False)
-
-    return embed
-
-def get_links(details: ChannelDetails) -> str:
-    meta = ChannelEmbedMeta(details)
-    embed = Embed(title=meta.title, url=meta.url)
-
-    name, value = meta.links_panel
-    embed.add_field(name=name, value=value, inline=False)
-
-    return embed
 
 def get_big_embed(details: ChannelDetails) -> Embed:
     meta = ChannelEmbedMeta(details)
