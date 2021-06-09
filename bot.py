@@ -30,17 +30,20 @@ def extend(bot, name: str, logger: logging.Logger):
 extend(bot, 'picarto.cog', logger)
 extend(bot, 'e621.cog', logger)
 
-try:
-    bot_token = read_secret('DISCORD_TOKEN')
 
-    logger.debug("Token:", bot_token)
+# Only run these if this file is run directly
+if __name__ == "__main__":
+    try:
+        bot_token = read_secret('DISCORD_TOKEN')
 
-    # Run Bot
-    bot.run(bot_token.value)
+        logger.debug("Token:", bot_token)
 
-except ValueError:
-    logger.error("Discord token not found. Failed to start bot.")
-    logger.warn("Go to https://discord.com/developers/applications/840469974983245844/bot + authenticate to retrieve token")
+        # Run Bot
+        bot.run(bot_token.value)
 
-finally:
-    logger.debug("Shutting down bot")
+    except ValueError:
+        logger.error("Discord token not found. Failed to start bot.")
+        logger.warn("Go to https://discord.com/developers/applications/840469974983245844/bot + authenticate to retrieve token")
+
+    finally:
+        logger.debug("Shutting down bot")
