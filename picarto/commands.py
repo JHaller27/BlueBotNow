@@ -3,7 +3,7 @@ from utils.logging import Logger
 from commands import CustomCommand
 from discord import Embed
 from caller import get_channel_data
-from .channel_embed import ChannelEmbedMeta, get_big_embed, get_status_badge, get_rules, get_links
+from .channel_embed import ChannelEmbedMeta, get_big_embed, get_status_badge
 
 
 class Check(CustomCommand):
