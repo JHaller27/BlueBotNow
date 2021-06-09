@@ -111,4 +111,4 @@ class E621(commands.Cog):
 
 
 def setup(bot):
-    username =     bot.add_cog(E621(bot))
+    bot.add_cog(E621(bot))
