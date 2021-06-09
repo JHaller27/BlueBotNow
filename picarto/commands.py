@@ -46,8 +46,7 @@ class Rules(CustomCommand):
         name, value = meta.rules_panel
         embed.add_field(name=name, value=value, inline=False)
 
-
-        await self.ctx.send(embed)
+        await self.ctx.send(embed=embed)
 
 
 class Links(CustomCommand):
@@ -65,4 +64,4 @@ class Links(CustomCommand):
         name, value = meta.links_panel
         embed.add_field(name=name, value=value, inline=False)
 
-        await self.ctx.send(embed)
+        await self.ctx.send(embed=embed)
