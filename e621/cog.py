@@ -1,4 +1,3 @@
-from typing import final
 from discord.ext import commands
 from discord import Embed
 from requests.models import Response
