@@ -14,7 +14,7 @@ class Context:
     def author(self) -> Author:
         return Author()
 
-    async def send(content, embed, **kwargs):
+    async def send(self, content = None, *, embed = None, **kwargs):
         # Instead of sending to Discord, send to the stdin!
         if content:
             print(f"content={content}")
