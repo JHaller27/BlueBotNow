@@ -1,4 +1,3 @@
-from typing import final
 from discord.ext import commands
 from discord import Embed
 from requests.models import Response
@@ -45,7 +44,7 @@ class E621(commands.Cog):
         self._logger = Logger('e621')
 
         self._bot_name = "BlueBotNow"
-        self._version = "1.0"
+        self._version = "0.0.1"
         self._username = read_env("E621_UNAME", "(username not found)", logger=self._logger)
 
     @property
@@ -112,4 +111,4 @@ class E621(commands.Cog):
 
 
 def setup(bot):
-    username =     bot.add_cog(E621(bot))
+    bot.add_cog(E621(bot))
