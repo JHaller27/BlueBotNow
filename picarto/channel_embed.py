@@ -124,13 +124,34 @@ class ChannelEmbedMeta:
         body = panel.body or "No information found"
 
         return title, body
+    
+    @property
+    def rules_panel(self) -> tuple[str, str]:
+        panels = self._channel_details.description_panels
+
+        panel: DescriptionPanel = sorted(panels, key=lambda p: p.position)[1]
+
+        title = panel.title or "Channel rules"
+        body = panel.body or "No information found"
+
+        return title, body
+    
+    @property
+    def links_panel(self) -> tuple[str, str]:
+        panels = self._channel_details.description_panels
+
+        panel: DescriptionPanel = sorted(panels, key=lambda p: p.position)[2]
+
+        title = panel.title or "Channel links"
+        body = panel.body or "No information found"
+
+        return title, body
 
 
 def get_status_badge(details: ChannelDetails) -> str:
     meta = ChannelEmbedMeta(details)
 
     return meta.badge
-
 
 def get_big_embed(details: ChannelDetails) -> Embed:
     meta = ChannelEmbedMeta(details)
