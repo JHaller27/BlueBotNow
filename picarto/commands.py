@@ -3,7 +3,7 @@ from utils.logging import Logger
 from commands import CustomCommand
 from discord import Embed
 from caller import get_channel_data
-from .channel_embed import ChannelEmbedMeta, get_big_embed, get_status_badge
+from .channel_embed import ChannelEmbedMeta, get_big_embed
 
 
 class Check(CustomCommand):
@@ -14,8 +14,19 @@ class Check(CustomCommand):
         (name, ) = args
 
         details = get_channel_data(name, self._logger)
+        meta = ChannelEmbedMeta(details)
 
-        await self.ctx.send(get_status_badge(details))
+        embed = Embed(title=meta.title, url=meta.url)
+
+        if img := meta.thumbnail:
+            embed.set_thumbnail(url=img)
+        if meta.online:
+            if img := meta.image:
+                embed.set_image(url=img)
+
+        embed.color = meta.color
+
+        await self.ctx.send(embed=embed)
 
 
 class Info(CustomCommand):

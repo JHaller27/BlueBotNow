@@ -148,11 +148,6 @@ class ChannelEmbedMeta:
         return title, body
 
 
-def get_status_badge(details: ChannelDetails) -> str:
-    meta = ChannelEmbedMeta(details)
-
-    return meta.badge
-
 def get_big_embed(details: ChannelDetails) -> Embed:
     meta = ChannelEmbedMeta(details)
 
