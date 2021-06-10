@@ -35,7 +35,7 @@ def print_embed(embed):
     if url := embed_dict.get('url'):
         print("\tUrl:", url)
     if color := embed_dict.get('color'):
-        print("\tColor:", color)
+        print(f"\tColor: #{color:06X}")
     if thumbnail := embed_dict.get('thumbnail'):
         print("\tThumbnail Url:", thumbnail.get('url'))
     if fields := embed_dict.get('fields'):
