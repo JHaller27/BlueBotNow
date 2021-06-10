@@ -30,16 +30,21 @@ def print_embed(embed):
     embed_dict = embed.to_dict()
 
     print("Embed")
-    print("\tTitle:", embed_dict['title'])
-    print("\tUrl:", embed_dict['url'])
-    print("\tColor:", embed_dict['color'])
-    print("\tThumbnail Url:", embed_dict['thumbnail']['url'])
-    print("\tDescription:", embed_dict['description'])
-    print("\tFields:")
-    for panel in embed_dict['fields']:
-        print("\t\tInline:", panel['inline'])
-        print("\t\tName:", panel['name'])
-        print("\t\tValue:", sep)
-        print(panel['value'], sep)
-    print("\tDescription:", sep)
-    print(embed_dict['description'], sep)
+    if title := embed_dict.get('title'):
+        print("\tTitle:", title)
+    if url := embed_dict.get('url'):
+        print("\tUrl:", url)
+    if color := embed_dict.get('color'):
+        print("\tColor:", color)
+    if thumbnail := embed_dict.get('thumbnail'):
+        print("\tThumbnail Url:", thumbnail.get('url'))
+    if fields := embed_dict.get('fields'):
+        print("\tFields:")
+        for panel in fields:
+            print("\t\tInline:", panel.get('inline'))
+            print("\t\tName:", panel.get('name'))
+            print("\t\tValue:", sep)
+            print(panel.get('value'), sep)
+    if description := embed_dict.get('description'):
+        print("\tDescription:", sep)
+        print(description, sep)
