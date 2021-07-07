@@ -19,6 +19,32 @@ class Context:
         if content:
             print(f"content={content}")
         if embed:
-            print(f"embed={embed.to_dict()}")
+            print_embed(embed)
         if kwargs and len(kwargs) > 0:
             print(f"kwargs={kwargs}")
+
+
+def print_embed(embed):
+    sep = "\n" + "-" * 40
+
+    embed_dict = embed.to_dict()
+
+    print("Embed")
+    if title := embed_dict.get('title'):
+        print("\tTitle:", title)
+    if url := embed_dict.get('url'):
+        print("\tUrl:", url)
+    if color := embed_dict.get('color'):
+        print(f"\tColor: #{color:06X}")
+    if thumbnail := embed_dict.get('thumbnail'):
+        print("\tThumbnail Url:", thumbnail.get('url'))
+    if fields := embed_dict.get('fields'):
+        print("\tFields:")
+        for panel in fields:
+            print("\t\tInline:", panel.get('inline'))
+            print("\t\tName:", panel.get('name'))
+            print("\t\tValue:", sep)
+            print(panel.get('value'), sep)
+    if description := embed_dict.get('description'):
+        print("\tDescription:", sep)
+        print(description, sep)
